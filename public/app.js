@@ -1063,46 +1063,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Top Ribbon Stat Card Interactive Handlers
+  // Top Ribbon Stat Card Interactive Handlers & Dedicated Modals
   const bannerCurriculumCard = document.getElementById('bannerCurriculumCard');
   const bannerCandidatesCard = document.getElementById('bannerCandidatesCard');
   const bannerPersonasCard = document.getElementById('bannerPersonasCard');
   const bannerScoringCard = document.getElementById('bannerScoringCard');
+
+  const curriculumOverviewModal = document.getElementById('curriculumOverviewModal');
+  const closeCurriculumModalBtn = document.getElementById('closeCurriculumModalBtn');
+
+  const candidatesOverviewModal = document.getElementById('candidatesOverviewModal');
+  const closeCandidatesModalBtn = document.getElementById('closeCandidatesModalBtn');
+  const candidatesModalRosterList = document.getElementById('candidatesModalRosterList');
+
+  const personasOverviewModal = document.getElementById('personasOverviewModal');
+  const closePersonasModalBtn = document.getElementById('closePersonasModalBtn');
+
   const scoringFormulaModal = document.getElementById('scoringFormulaModal');
   const closeScoringModalBtn = document.getElementById('closeScoringModalBtn');
 
-  if (bannerCurriculumCard) {
+  // 1. Curriculum Card -> Curriculum Overview Modal
+  if (bannerCurriculumCard && curriculumOverviewModal) {
     bannerCurriculumCard.addEventListener('click', () => {
-      const scopeElem = document.querySelector('.curriculum-scope-section') || document.querySelector('.home-section:last-of-type');
-      if (scopeElem) scopeElem.scrollIntoView({ behavior: 'smooth' });
+      curriculumOverviewModal.classList.remove('hidden');
+    });
+  }
+  if (closeCurriculumModalBtn && curriculumOverviewModal) {
+    closeCurriculumModalBtn.addEventListener('click', () => {
+      curriculumOverviewModal.classList.add('hidden');
     });
   }
 
-  if (bannerCandidatesCard) {
+  // 2. Candidates Card -> Candidate Roster Overview Modal
+  if (bannerCandidatesCard && candidatesOverviewModal) {
     bannerCandidatesCard.addEventListener('click', () => {
-      const gridElem = document.getElementById('homeCandidateGrid');
-      if (gridElem) gridElem.scrollIntoView({ behavior: 'smooth' });
-      if (candidateSelect) candidateSelect.focus();
+      if (candidatesModalRosterList) {
+        candidatesModalRosterList.innerHTML = '';
+        candidates.forEach(c => {
+          const item = document.createElement('div');
+          item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.6); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);';
+          item.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar" style="width:32px; height:32px; font-size:12px;">${c.name.split(' ').map(n=>n[0]).join('')}</div>
+              <div>
+                <strong style="font-size:13px; color:var(--text-main);">${c.name}</strong>
+                <div style="font-size:11px; color:var(--text-muted);">${c.experience_level}</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-xs launch-cand-modal-btn" data-id="${c.id}">Select Profile</button>
+          `;
+          item.querySelector('.launch-cand-modal-btn').addEventListener('click', () => {
+            candidateSelect.value = c.id;
+            candidateSelect.dispatchEvent(new Event('change'));
+            candidatesOverviewModal.classList.add('hidden');
+            const gridElem = document.getElementById('homeCandidateGrid');
+            if (gridElem) gridElem.scrollIntoView({ behavior: 'smooth' });
+          });
+          candidatesModalRosterList.appendChild(item);
+        });
+      }
+      candidatesOverviewModal.classList.remove('hidden');
+    });
+  }
+  if (closeCandidatesModalBtn && candidatesOverviewModal) {
+    closeCandidatesModalBtn.addEventListener('click', () => {
+      candidatesOverviewModal.classList.add('hidden');
     });
   }
 
-  if (bannerPersonasCard) {
-    const personas = ['senior_architect', 'cohort_mentor', 'faang_lead'];
-    let personaIdx = 0;
+  // 3. Personas Card -> Personas Overview Modal
+  if (bannerPersonasCard && personasOverviewModal) {
     bannerPersonasCard.addEventListener('click', () => {
-      personaIdx = (personaIdx + 1) % personas.length;
-      const targetPersona = personas[personaIdx];
-      const targetBtn = document.querySelector(`.persona-btn[data-persona="${targetPersona}"]`);
-      if (targetBtn) targetBtn.click();
+      personasOverviewModal.classList.remove('hidden');
     });
   }
+  if (closePersonasModalBtn && personasOverviewModal) {
+    closePersonasModalBtn.addEventListener('click', () => {
+      personasOverviewModal.classList.add('hidden');
+    });
+  }
+  document.querySelectorAll('.select-persona-modal-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const p = e.target.getAttribute('data-persona');
+      const targetBtn = document.querySelector(`.persona-btn[data-persona="${p}"]`);
+      if (targetBtn) targetBtn.click();
+      if (personasOverviewModal) personasOverviewModal.classList.add('hidden');
+    });
+  });
 
+  // 4. Scoring Card -> Symmetrical Scoring Formula Modal
   if (bannerScoringCard && scoringFormulaModal) {
     bannerScoringCard.addEventListener('click', () => {
       scoringFormulaModal.classList.remove('hidden');
     });
   }
-
   if (closeScoringModalBtn && scoringFormulaModal) {
     closeScoringModalBtn.addEventListener('click', () => {
       scoringFormulaModal.classList.add('hidden');

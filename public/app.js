@@ -549,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let lastPhoneViolationTime = 0;
+  let phoneStreak = 0;
 
   // Real-time Computer Vision Frame Analyzer for Live Mobile Phone / Secondary Device Detection
   function startLiveComputerVisionAnalyzer() {
@@ -567,11 +568,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let brightScreenPixels = 0;
       let totalRegionPixels = 0;
-      const startY = Math.floor(vh * 0.30);
-      const endY = Math.floor(vh * 0.95);
+      // Scan handheld central lower region of webcam stream
+      const startY = Math.floor(vh * 0.35);
+      const endY = Math.floor(vh * 0.90);
 
       for (let y = startY; y < endY; y++) {
-        for (let x = 10; x < vw - 10; x++) {
+        for (let x = 20; x < vw - 20; x++) {
           const idx = (y * vw + x) * 4;
           const r = data[idx];
           const g = data[idx + 1];
@@ -579,8 +581,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
 
           totalRegionPixels++;
-          // Screen luminance & contrast check
-          if (luminance > 175 && (Math.abs(r - g) < 50 || b > 150)) {
+          // High-luminance backlit screen check (OLED/LCD display brightness > 238)
+          if (luminance > 238 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) {
             brightScreenPixels++;
           }
         }
@@ -588,14 +590,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const screenRatio = brightScreenPixels / totalRegionPixels;
 
-      if (screenRatio > 0.06) {
+      // Requires high screen luminance density (> 14% of region)
+      if (screenRatio > 0.14) {
+        phoneStreak++;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'Mobile Phone! ⚠️';
-        // Enforce 15-second cooldown per mobile phone event so 1 phone event = 1 violation strike
-        if (Date.now() - lastPhoneViolationTime > 15000) {
+        
+        // Requires 3 consecutive frames (4.5s continuous hold) to eliminate false positives
+        if (phoneStreak >= 3 && (Date.now() - lastPhoneViolationTime > 15000)) {
           lastPhoneViolationTime = Date.now();
           recordCheatingViolation('Mobile Phone / Secondary Digital Device detected in webcam feed');
         }
       } else {
+        phoneStreak = 0;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'None';
       }
     }, 1500);

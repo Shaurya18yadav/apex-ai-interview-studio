@@ -534,10 +534,29 @@ document.addEventListener('DOMContentLoaded', () => {
         proctorWebcam.classList.remove('hidden');
       }
       if (proctorSimCanvas) proctorSimCanvas.classList.add('hidden');
-      if (webcamBtnLabel) webcamBtnLabel.textContent = 'Disable Live Camera';
+      if (webcamBtnLabel) webcamBtnLabel.textContent = 'Camera Active (Locked)';
       if (toggleWebcamBtn) {
         toggleWebcamBtn.classList.add('btn-danger');
         toggleWebcamBtn.classList.remove('btn-secondary');
+        if (activeSession && activeSession.status === 'active') {
+          toggleWebcamBtn.disabled = true;
+          toggleWebcamBtn.title = 'Camera is required and locked during the live technical interview';
+        }
+      }
+
+      // Attach track disconnect sentinel
+      const videoTrack = webcamStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.onended = () => {
+          if (activeSession && activeSession.status === 'active') {
+            recordCheatingViolation('Camera stream disconnected or turned off');
+          }
+        };
+        videoTrack.onmute = () => {
+          if (activeSession && activeSession.status === 'active') {
+            recordCheatingViolation('Camera video feed muted or covered');
+          }
+        };
       }
 
       startLiveComputerVisionAnalyzer();
@@ -568,12 +587,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let brightScreenPixels = 0;
       let totalRegionPixels = 0;
-      // Scan handheld central lower region of webcam stream
-      const startY = Math.floor(vh * 0.35);
-      const endY = Math.floor(vh * 0.90);
+      // Scan handheld center-lower region of webcam stream
+      const startY = Math.floor(vh * 0.30);
+      const endY = Math.floor(vh * 0.92);
 
       for (let y = startY; y < endY; y++) {
-        for (let x = 20; x < vw - 20; x++) {
+        for (let x = 15; x < vw - 15; x++) {
           const idx = (y * vw + x) * 4;
           const r = data[idx];
           const g = data[idx + 1];
@@ -581,8 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
 
           totalRegionPixels++;
-          // High-luminance backlit screen check (OLED/LCD display brightness > 238)
-          if (luminance > 238 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) {
+          // Mobile Phone Display Screen Luminance & Contrast Check (Display brightness > 200)
+          if (luminance > 200 && Math.abs(r - g) < 35 && Math.abs(g - b) < 35) {
             brightScreenPixels++;
           }
         }
@@ -590,13 +609,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const screenRatio = brightScreenPixels / totalRegionPixels;
 
-      // Requires high screen luminance density (> 14% of region)
-      if (screenRatio > 0.14) {
+      // Mobile Phone Screen Detection (Density > 9% of scan region)
+      if (screenRatio > 0.09) {
         phoneStreak++;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'Mobile Phone! ⚠️';
         
-        // Requires 3 consecutive frames (4.5s continuous hold) to eliminate false positives
-        if (phoneStreak >= 3 && (Date.now() - lastPhoneViolationTime > 15000)) {
+        // Requires 2 consecutive frames (3.0s continuous hold) to trigger strike
+        if (phoneStreak >= 2 && (Date.now() - lastPhoneViolationTime > 10000)) {
           lastPhoneViolationTime = Date.now();
           recordCheatingViolation('Mobile Phone / Secondary Digital Device detected in webcam feed');
         }
@@ -958,9 +977,15 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
   });
 
-  // Toggle Camera Manual Button
+  // Toggle Camera Manual Button (Locked during active interview)
   if (toggleWebcamBtn) {
     toggleWebcamBtn.addEventListener('click', async () => {
+      if (activeSession && activeSession.status === 'active') {
+        recordCheatingViolation('Attempted to turn off camera during live interview');
+        alert('⚠️ Security Alert: Camera stream is strictly required and cannot be disabled during the interview!');
+        return;
+      }
+
       if (!webcamStream) {
         await startWebcamAutomatically();
       } else {
@@ -985,8 +1010,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function recordCheatingViolation(reason) {
     if (!activeSession || activeSession.status === 'completed' || activeSession.status === 'disqualified') return;
     
-    // 12-second grace period after starting interview to prevent accidental setup triggers
-    if (Date.now() - sessionStartTime < 12000) return;
+    // 3-second initial launch grace period
+    if (Date.now() - sessionStartTime < 3000) return;
 
     violationCount++;
 
@@ -1055,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Active Browser Event Listeners with Debounced Tab Switch Detector
+  // Active Browser Event Listeners with Strict Tab Switch Detector
   window.addEventListener('focus', () => {
     if (blurTimer) {
       clearTimeout(blurTimer);
@@ -1068,10 +1093,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSession && activeSession.status !== 'completed' && activeSession.status !== 'disqualified') {
       if (proctorGazeStatus) proctorGazeStatus.textContent = 'Looking Away!';
       if (blurTimer) clearTimeout(blurTimer);
-      // Only count violation if user remains off tab for > 2.5 seconds
+      // Strictly enforce tab switch violation if unfocused > 1.2s
       blurTimer = setTimeout(() => {
-        recordCheatingViolation('Tab switch / window focus loss (> 2.5s)');
-      }, 2500);
+        recordCheatingViolation('Tab switch or window focus loss detected');
+      }, 1200);
     }
   });
 
@@ -1081,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (blurTimer) clearTimeout(blurTimer);
       blurTimer = setTimeout(() => {
         recordCheatingViolation('Switched to secondary tab or application');
-      }, 2500);
+      }, 1200);
     } else {
       if (blurTimer) {
         clearTimeout(blurTimer);

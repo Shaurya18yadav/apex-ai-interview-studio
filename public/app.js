@@ -941,6 +941,22 @@ document.addEventListener('DOMContentLoaded', () => {
     evaluationModal.classList.add('hidden');
   });
 
+  const openBreethDocsBtn = document.getElementById('openBreethDocsBtn');
+  const closeBreethDocsBtn = document.getElementById('closeBreethDocsBtn');
+  const breethDocsModal = document.getElementById('breethDocsModal');
+
+  if (openBreethDocsBtn && breethDocsModal) {
+    openBreethDocsBtn.addEventListener('click', () => {
+      breethDocsModal.classList.remove('hidden');
+    });
+  }
+
+  if (closeBreethDocsBtn && breethDocsModal) {
+    closeBreethDocsBtn.addEventListener('click', () => {
+      breethDocsModal.classList.add('hidden');
+    });
+  }
+
   restartBtn.addEventListener('click', () => {
     evaluationModal.classList.add('hidden');
     interviewTerminal.classList.add('hidden');

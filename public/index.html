@@ -39,6 +39,9 @@
       </div>
 
       <div class="nav-actions">
+        <button id="openBreethDocsBtn" class="btn btn-secondary btn-sm" title="Open Breeth Intent-Aware AI Memory Docs">
+          <i class="fa-solid fa-brain text-teal"></i> Breeth AI Memory
+        </button>
         <button id="ttsToggleBtn" class="btn btn-secondary btn-sm tts-btn active" title="Toggle AI Voice Text-to-Speech">
           <i class="fa-solid fa-volume-high"></i> <span id="ttsBtnLabel">Voice ON</span>
         </button>
@@ -533,6 +536,32 @@
         </div>
 
       </main>
+    </div>
+  </div>
+
+  <!-- Breeth AI Memory & Docs Embedded Modal -->
+  <div id="breethDocsModal" class="modal-backdrop hidden">
+    <div class="modal-card glass-panel breeth-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-brain text-teal"></i>
+          <div>
+            <h2>Breeth — Intent-Aware Memory for AI Agents</h2>
+            <p class="modal-subtitle">Persistent episodic memory, graph retrieval & REST/MCP Docs</p>
+          </div>
+        </div>
+        <button type="button" id="closeBreethDocsBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body breeth-modal-body">
+        <div class="breeth-status-bar">
+          <span class="badge badge-teal"><i class="fa-solid fa-plug"></i> Breeth REST API & MCP v0.1</span>
+          <span class="breeth-memory-status"><i class="fa-solid fa-database"></i> Candidate Intent Memory: Active</span>
+          <a href="https://docs.thebreeth.com/" target="_blank" class="btn btn-secondary btn-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open External Docs</a>
+        </div>
+        <div class="iframe-container">
+          <iframe src="https://docs.thebreeth.com/" title="Breeth Documentation" class="breeth-iframe"></iframe>
+        </div>
+      </div>
     </div>
   </div>
 

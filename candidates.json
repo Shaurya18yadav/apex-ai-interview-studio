@@ -1,0 +1,426 @@
+{
+  "candidates": [
+    {
+      "id": "cand_001",
+      "name": "Alex Chen",
+      "email": "alex.chen@example.com",
+      "experience_level": "Mid-Level AI Engineer",
+      "profile_summary": "Strong in RAG pipelines and vector search optimization. Skipped Kubernetes deployment; high confidence in Agentic AI and MCP.",
+      "completed_missions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        31
+      ],
+      "skipped_topics": [
+        13,
+        24,
+        25,
+        30
+      ],
+      "attempts": [
+        {
+          "day": 8,
+          "score": 95,
+          "feedback": "Flawless naive RAG implementation with ChromaDB."
+        },
+        {
+          "day": 9,
+          "score": 90,
+          "feedback": "Good hybrid search logic with BM25 fusion."
+        },
+        {
+          "day": 14,
+          "score": 88,
+          "feedback": "Integrated RAGAS metrics accurately."
+        },
+        {
+          "day": 18,
+          "score": 92,
+          "feedback": "Built multi-agent research graph in LangGraph."
+        },
+        {
+          "day": 22,
+          "score": 94,
+          "feedback": "Created high-performing MCP server with custom tools."
+        }
+      ],
+      "learning_signals": {
+        "strongest_topics": [
+          "Vector Databases & Hybrid Search",
+          "Agentic AI (LangGraph & ReAct)",
+          "Model Context Protocol (MCP) Server Development"
+        ],
+        "struggling_topics": [
+          "Knowledge Graphs & GraphRAG (Day 13)",
+          "Kubernetes & Production Telemetry (Day 30)"
+        ],
+        "preferred_tools": [
+          "LangChain",
+          "Qdrant",
+          "LangGraph",
+          "MCP SDK",
+          "FastAPI"
+        ]
+      }
+    },
+    {
+      "id": "cand_002",
+      "name": "Priya Sharma",
+      "email": "priya.sharma@example.com",
+      "experience_level": "Senior Backend & AI Architect",
+      "profile_summary": "Completed 100% of the 31-day curriculum with top distinction. Deep mastery across production containerization, MCP security, and GraphRAG.",
+      "completed_missions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "skipped_topics": [],
+      "attempts": [
+        {
+          "day": 13,
+          "score": 98,
+          "feedback": "Outstanding Neo4j + Vector multi-hop GraphRAG implementation."
+        },
+        {
+          "day": 20,
+          "score": 96,
+          "feedback": "Impenetrable Reflexion agent loop with unit test generation."
+        },
+        {
+          "day": 24,
+          "score": 100,
+          "feedback": "Enterprise-grade MCP OAuth2 and containerized stdio transport."
+        },
+        {
+          "day": 30,
+          "score": 97,
+          "feedback": "Full K8s deployment with OpenTelemetry tracing and HPA."
+        }
+      ],
+      "learning_signals": {
+        "strongest_topics": [
+          "Enterprise RAG & GraphRAG",
+          "MCP Transport Security & OAuth2",
+          "Kubernetes Deployment & Telemetry"
+        ],
+        "struggling_topics": [],
+        "preferred_tools": [
+          "Neo4j",
+          "LangGraph",
+          "Docker",
+          "Kubernetes",
+          "MCP SDK",
+          "vLLM"
+        ]
+      }
+    },
+    {
+      "id": "cand_003",
+      "name": "Marcus Vance",
+      "email": "marcus.vance@example.com",
+      "experience_level": "Junior ML Engineer",
+      "profile_summary": "Focused heavily on early RAG & Prompt Engineering. Skipped advanced MCP security and production K8s deployment.",
+      "completed_missions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        16,
+        17
+      ],
+      "skipped_topics": [
+        12,
+        13,
+        15,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "attempts": [
+        {
+          "day": 2,
+          "score": 85,
+          "feedback": "Good CoT prompting techniques."
+        },
+        {
+          "day": 8,
+          "score": 82,
+          "feedback": "Basic Naive RAG working, needs better chunk overlap."
+        },
+        {
+          "day": 17,
+          "score": 79,
+          "feedback": "Function calling works but schema parsing failed edge cases."
+        }
+      ],
+      "learning_signals": {
+        "strongest_topics": [
+          "Prompt Engineering & CoT",
+          "Basic Naive RAG",
+          "OpenAI Function Calling"
+        ],
+        "struggling_topics": [
+          "Hierarchical Chunking",
+          "Advanced Agents & MCP Systems"
+        ],
+        "preferred_tools": [
+          "OpenAI API",
+          "LangChain",
+          "ChromaDB",
+          "Python"
+        ]
+      },
+      "status": "Disqualified",
+      "cheating_violations": 3
+    },
+    {
+      "id": "cand_004",
+      "name": "Elena Rostova",
+      "email": "elena.rostova@example.com",
+      "experience_level": "Lead Data Scientist",
+      "profile_summary": "Specialist in RAG evaluation, benchmarks, and vector math. Strong background in open-weight local model serving with vLLM.",
+      "completed_missions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        26,
+        27,
+        28,
+        29,
+        31
+      ],
+      "skipped_topics": [
+        13,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        30
+      ],
+      "attempts": [
+        {
+          "day": 5,
+          "score": 96,
+          "feedback": "Deep mathematical understanding of vector distance metrics."
+        },
+        {
+          "day": 14,
+          "score": 97,
+          "feedback": "Built comprehensive RAGAS automated testing pipeline."
+        },
+        {
+          "day": 28,
+          "score": 95,
+          "feedback": "Optimized vLLM throughput with PagedAttention tuning."
+        }
+      ],
+      "learning_signals": {
+        "strongest_topics": [
+          "RAGAS Evaluation & Metrics",
+          "Vector Embeddings Math",
+          "Local Model Serving (vLLM & Ollama)"
+        ],
+        "struggling_topics": [
+          "Agentic AI Frameworks",
+          "Model Context Protocol"
+        ],
+        "preferred_tools": [
+          "PyTorch",
+          "vLLM",
+          "RAGAS",
+          "SentenceTransformers",
+          "FastAPI"
+        ]
+      },
+      "status": "Disqualified",
+      "cheating_violations": 3
+    },
+    {
+      "id": "cand_005",
+      "name": "Jordan Taylor",
+      "email": "jordan.taylor@example.com",
+      "experience_level": "Full-Stack AI Developer",
+      "profile_summary": "Passionate about building agentic applications and custom MCP clients/servers. Fast prototype builder with FastAPI and Docker.",
+      "completed_missions": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        26,
+        27,
+        31
+      ],
+      "skipped_topics": [
+        4,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        20,
+        24,
+        25,
+        28,
+        29,
+        30
+      ],
+      "attempts": [
+        {
+          "day": 16,
+          "score": 91,
+          "feedback": "Clean ReAct loop implementation."
+        },
+        {
+          "day": 22,
+          "score": 93,
+          "feedback": "Created multi-tool MCP server with TypeScript."
+        },
+        {
+          "day": 27,
+          "score": 89,
+          "feedback": "Solid multi-stage Docker build."
+        }
+      ],
+      "learning_signals": {
+        "strongest_topics": [
+          "Model Context Protocol (MCP)",
+          "ReAct & Tool Calling Agents",
+          "FastAPI & Docker Deployment"
+        ],
+        "struggling_topics": [
+          "Advanced RAG Evaluation & HyDE",
+          "Kubernetes & Telemetry"
+        ],
+        "preferred_tools": [
+          "TypeScript",
+          "FastAPI",
+          "Docker",
+          "MCP SDK",
+          "LangChain"
+        ]
+      }
+    },
+    {
+      "id": "cand_006",
+      "name": "lina",
+      "experience_level": "Mid-Level AI Engineer",
+      "completed_missions": [
+        1,
+        2,
+        6,
+        11,
+        16,
+        21
+      ],
+      "skipped_topics": [],
+      "learning_signals": {
+        "strongest_topics": [
+          "vector and dsa"
+        ],
+        "areas_for_growth": [
+          "Production Telemetry"
+        ]
+      }
+    }
+  ]
+}

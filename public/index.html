@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex AI - Enterprise Technical Interview Studio</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Glow Background Orbs -->
+  <div class="app-background">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div id="interactiveBgBoxes" class="interactive-boxes-bg"></div>
+  </div>
+
+  <div class="app-shell">
+    <!-- Top Global Header -->
+    <header class="global-navbar glass-panel">
+      <div class="nav-brand">
+        <div class="brand-icon-box">
+          <i class="fa-solid fa-brain-circuit glow-icon"></i>
+        </div>
+        <div class="brand-text-group">
+          <span class="brand-name">Apex AI</span>
+          <span class="brand-tag">Interview Studio v3.0</span>
+        </div>
+      </div>
+
+      <div class="nav-center-status">
+        <span class="pulse-indicator"></span>
+        <span class="status-label">AI Engine Active & Ready</span>
+      </div>
+
+      <div class="nav-actions">
+        <button id="ttsToggleBtn" class="btn btn-secondary btn-sm tts-btn active" title="Toggle AI Voice Text-to-Speech">
+          <i class="fa-solid fa-volume-high"></i> <span id="ttsBtnLabel">Voice ON</span>
+        </button>
+        <button id="openAddCandidateBtn" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-user-plus"></i> Add Candidate
+        </button>
+        <span id="topicBadge" class="topic-pill hidden">
+          <i class="fa-solid fa-book-bookmark"></i> <span id="currentTopicText">Day 1: Setup</span>
+        </span>
+        <button id="endInterviewBtn" class="btn btn-danger btn-sm hidden">
+          <i class="fa-solid fa-flag-checkered"></i> Conclude Interview
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Application Canvas -->
+    <div class="main-layout">
+      <!-- Sidebar Control Panel -->
+      <aside class="sidebar glass-panel">
+        <div class="sidebar-title">
+          <i class="fa-solid fa-sliders"></i> Interview Controls
+        </div>
+
+        <!-- Interviewer Persona Switcher -->
+        <div class="sidebar-section">
+          <label class="section-label">
+            <i class="fa-solid fa-user-ninja"></i> Interviewer Persona
+          </label>
+          <div class="persona-selector">
+            <button class="persona-btn active" data-persona="senior_architect">
+              <i class="fa-solid fa-robot"></i> Senior Architect
+            </button>
+            <button class="persona-btn" data-persona="cohort_mentor">
+              <i class="fa-solid fa-graduation-cap"></i> Cohort Mentor
+            </button>
+            <button class="persona-btn" data-persona="faang_lead">
+              <i class="fa-solid fa-bolt"></i> FAANG Lead
+            </button>
+          </div>
+        </div>
+
+        <!-- Candidate Select Dropdown -->
+        <div class="sidebar-section">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label for="candidateSelect" class="section-label" style="margin-bottom:0;">
+              <i class="fa-solid fa-user-gear"></i> Select Candidate Profile
+            </label>
+            <button id="sidebarAddCandidateBtn" class="btn btn-secondary btn-sm" style="padding:2px 8px; font-size:11px;" type="button">+ Add</button>
+          </div>
+          <div class="select-wrapper">
+            <select id="candidateSelect" class="styled-select">
+              <option value="" disabled selected>Select candidate profile...</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-icon"></i>
+          </div>
+        </div>
+
+        <!-- Candidate Detail Sidebar Card -->
+        <div id="candidateCard" class="candidate-card hidden">
+          <div class="candidate-header">
+            <div class="avatar" id="candidateAvatar">AC</div>
+            <div class="candidate-meta">
+              <h4 id="candidateName">Alex Chen</h4>
+              <span class="badge level-badge" id="candidateLevel">Mid-Level AI Engineer</span>
+            </div>
+          </div>
+
+          <div class="candidate-stats">
+            <div class="stat-item">
+              <span class="stat-num" id="completedMissionsCount">0</span>
+              <span class="stat-label">Missions</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="skippedTopicsCount">0</span>
+              <span class="stat-label">Skipped</span>
+            </div>
+          </div>
+
+          <div class="candidate-tags">
+            <span class="tag-title"><i class="fa-solid fa-certificate"></i> Domain Proficiencies:</span>
+            <div id="strongTopicsContainer" class="tags-wrapper"></div>
+          </div>
+        </div>
+
+        <!-- Launch Interview CTA Button -->
+        <div class="action-box">
+          <button id="startInterviewBtn" class="btn btn-primary btn-glow btn-block" disabled>
+            <i class="fa-solid fa-play"></i> Start Technical Interview
+          </button>
+        </div>
+
+        <!-- Interview Progress Metric Tracker -->
+        <div class="compliance-panel">
+          <div class="panel-header">
+            <h4><i class="fa-solid fa-gauge-high"></i> Interview Progress</h4>
+            <span id="adaptiveStatusBadge" class="status-pill status-ready">Active</span>
+          </div>
+
+          <div class="metric-block">
+            <div class="metric-row">
+              <span>Questions (Min 8):</span>
+              <span id="metricQuestionsCount" class="metric-badge">0 / 8</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="questionsProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="metric-block mt-3">
+            <div class="metric-row">
+              <span>Curriculum Days (Min 4):</span>
+              <span id="metricDaysCount" class="metric-badge">0 / 4</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="daysProgressBar" class="progress-bar-fill fill-cyan" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live AI Video Proctoring Section -->
+        <div class="proctor-panel compliance-panel">
+          <div class="panel-header">
+            <h4><i class="fa-solid fa-shield-cat text-rose"></i> AI Anti-Cheat Proctor</h4>
+            <span id="proctorStatusBadge" class="status-pill status-ready">MONITORING</span>
+          </div>
+
+          <!-- Anti-Cheat Violation Banner -->
+          <div id="proctorAlertBanner" class="proctor-alert-banner hidden">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span id="alertBannerText">Tab switch detected!</span>
+          </div>
+
+          <!-- Video Feed Box -->
+          <div class="proctor-feed-box">
+            <video id="proctorWebcam" autoplay muted playsinline class="webcam-feed hidden"></video>
+            <canvas id="proctorSimCanvas" class="proctor-canvas"></canvas>
+            <div class="proctor-overlay-hud">
+              <span class="hud-tag"><i class="fa-solid fa-eye text-cyan"></i> Gaze: <b id="proctorGazeStatus">Centered</b></span>
+              <span class="hud-tag"><i class="fa-solid fa-mobile-screen text-amber"></i> Device: <b id="proctorDeviceStatus">None</b></span>
+            </div>
+          </div>
+
+          <div class="proctor-violations-bar mt-2">
+            <div class="violation-info">
+              <span>Security Violations:</span>
+              <span id="violationCountNum" class="violation-count">0 / 3</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="violationProgressBar" class="progress-bar-fill fill-amber" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="proctor-controls mt-2">
+            <button type="button" id="toggleWebcamBtn" class="btn btn-secondary btn-sm btn-block">
+              <i class="fa-solid fa-camera"></i> <span id="webcamBtnLabel">Enable Live Camera</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Persona Voice Waveform Indicator -->
+        <div id="aiVoiceIndicator" class="ai-voice-box hidden">
+          <div class="waveform">
+            <span class="bar bar1"></span>
+            <span class="bar bar2"></span>
+            <span class="bar bar3"></span>
+            <span class="bar bar4"></span>
+          </div>
+          <span id="personaLabelText" class="voice-text">Apex AI Senior Architect</span>
+        </div>
+
+        <footer class="sidebar-footer">
+          <p><i class="fa-solid fa-shield-halved"></i> 31-Day AI Engineering Cohort</p>
+        </footer>
+      </aside>
+
+      <!-- Main Home & Studio Content View -->
+      <main class="content-view">
+        <!-- HOME INTERFACE (Displayed when no active interview session) -->
+        <div id="welcomeScreen" class="home-interface">
+          <!-- Hero Banner Header -->
+          <div class="home-hero-card glass-panel">
+            <!-- 3D Orbiting Circles Globe Canvas Container -->
+            <div class="orbiting-globe-wrapper">
+              <div class="orbiting-globe-container">
+                <div class="globe-center">
+                  <canvas id="particleGlobeCanvas" class="particle-globe-canvas"></canvas>
+                </div>
+                <!-- Orbiting Concentric Rings -->
+                <div class="orbit-ring orbit-ring-1">
+                  <div class="orbit-icon-item pos-1-1"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/supabase.svg" alt="Supabase"></div></div>
+                  <div class="orbit-icon-item pos-1-2"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/gemini.svg" alt="Gemini"></div></div>
+                  <div class="orbit-icon-item pos-1-3"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/make.svg" alt="Make"></div></div>
+                </div>
+                <div class="orbit-ring orbit-ring-2">
+                  <div class="orbit-icon-item pos-2-1"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/figma.svg" alt="Figma"></div></div>
+                  <div class="orbit-icon-item pos-2-2"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/slack.svg" alt="Slack"></div></div>
+                </div>
+                <div class="orbit-ring orbit-ring-3">
+                  <div class="orbit-icon-item pos-3-1"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/clude.svg" alt="Claude"></div></div>
+                  <div class="orbit-icon-item pos-3-2"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/react.svg" alt="React"></div></div>
+                  <div class="orbit-icon-item pos-3-3"><div class="icon-bubble"><img src="https://images.shadcnspace.com/assets/svgs/python.svg" alt="Python"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-content">
+              <span class="hero-badge"><i class="fa-solid fa-sparkles"></i> Enterprise AI Engineering Cohort</span>
+              <h1 class="hero-title">The AI Technical Interviewer</h1>
+              <p class="hero-tagline">Build the interviewer, not the interview.</p>
+              <p class="hero-desc">
+                Conduct realistic, multi-turn technical interviews based on a candidate's 31-day cohort learning journey across RAG, Vector DBs, Agentic AI, MCP, FastAPI, and Production AI Deployments.
+              </p>
+            </div>
+          </div>
+
+          <!-- Stats Counter Banner Ribbon -->
+          <div class="stats-ribbon">
+            <div class="ribbon-card glass-panel">
+              <i class="fa-solid fa-calendar-days text-cyan"></i>
+              <div>
+                <span class="ribbon-val">31 Days</span>
+                <span class="ribbon-lbl">Cohort Curriculum</span>
+              </div>
+            </div>
+            <div class="ribbon-card glass-panel">
+              <i class="fa-solid fa-users text-purple"></i>
+              <div>
+                <span class="ribbon-val">5 Profiles</span>
+                <span class="ribbon-lbl">Synthetic Candidates</span>
+              </div>
+            </div>
+            <div class="ribbon-card glass-panel">
+              <i class="fa-solid fa-brain text-emerald"></i>
+              <div>
+                <span class="ribbon-val">3 Personas</span>
+                <span class="ribbon-lbl">Multi-Interviewer Panel</span>
+              </div>
+            </div>
+            <div class="ribbon-card glass-panel">
+              <i class="fa-solid fa-calculator text-amber"></i>
+              <div>
+                <span class="ribbon-val">10% + 90%</span>
+                <span class="ribbon-lbl">Scoring Formula</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Candidates Cards Grid Section -->
+          <div class="home-section">
+            <div class="section-title-group">
+              <div class="flex-between">
+                <h2><i class="fa-solid fa-user-check text-cyan"></i> Select Candidate to Interview</h2>
+                <button id="homeAddCandidateBtn" class="btn btn-secondary btn-sm">
+                  <i class="fa-solid fa-user-plus"></i> + Add New Candidate
+                </button>
+              </div>
+              <p>Click any candidate card below to immediately select their profile and start the technical interview session.</p>
+            </div>
+
+            <div id="homeCandidateGrid" class="candidate-grid">
+              <!-- Dynamically populated candidate cards -->
+            </div>
+          </div>
+
+          <!-- 31-Day Cohort Curriculum Roadmap -->
+          <div class="home-section">
+            <div class="section-title-group">
+              <h2><i class="fa-solid fa-layer-group text-purple"></i> 31-Day Curriculum Scope</h2>
+              <p>Apex AI dynamically selects questions across the cohort curriculum modules.</p>
+            </div>
+
+            <div class="curriculum-roadmap">
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 1</span>
+                <span class="mod-title">LLMs & Transformers</span>
+                <span class="mod-days">Days 1 - 5</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 2</span>
+                <span class="mod-title">RAG & Vector DBs</span>
+                <span class="mod-days">Days 6 - 10</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 3</span>
+                <span class="mod-title">Advanced RAG & HyDE</span>
+                <span class="mod-days">Days 11 - 15</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 4</span>
+                <span class="mod-title">Agentic AI & ReAct</span>
+                <span class="mod-days">Days 16 - 20</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 5</span>
+                <span class="mod-title">Model Context Protocol</span>
+                <span class="mod-days">Days 21 - 25</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 6</span>
+                <span class="mod-title">FastAPI & Docker</span>
+                <span class="mod-days">Days 26 - 29</span>
+              </div>
+              <div class="module-chip glass-panel">
+                <span class="mod-num">Mod 7</span>
+                <span class="mod-title">Production Capstone</span>
+                <span class="mod-days">Days 30 - 31</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT INTERVIEW TERMINAL (Active during interview) -->
+        <div id="interviewTerminal" class="terminal-container hidden">
+          <div id="chatStream" class="chat-stream">
+            <!-- Dynamically populated turn cards -->
+          </div>
+
+          <!-- Interactive Code Editor Sandbox / Text Tab Bar -->
+          <div class="terminal-tabs-bar">
+            <button id="textTabBtn" class="term-tab-btn active"><i class="fa-solid fa-comment-dots"></i> Text Explanation</button>
+            <button id="codeTabBtn" class="term-tab-btn"><i class="fa-solid fa-code"></i> Live Code Editor Sandbox</button>
+          </div>
+
+          <!-- Code Sandbox Container (Hidden by default) -->
+          <div id="codeSandboxPanel" class="code-sandbox-panel hidden glass-panel">
+            <div class="sandbox-header">
+              <span><i class="fa-solid fa-terminal text-cyan"></i> Python / JavaScript Live Code Sandbox</span>
+              <button id="runCodeBtn" class="btn btn-primary btn-sm"><i class="fa-solid fa-play"></i> Run & Test Code</button>
+            </div>
+            <textarea id="codeEditorInput" class="code-editor-textarea" placeholder="def cosine_similarity(v1, v2):&#10;    # Write your technical implementation code here...&#10;    return sum(a*b for a,b in zip(v1,v2))" rows="6"></textarea>
+            <div id="sandboxConsoleOutput" class="sandbox-console">Output: Code output will appear here upon execution.</div>
+          </div>
+
+          <!-- Quick Concept Suggestion Chips -->
+          <div id="quickChipsBar" class="quick-chips-bar">
+            <span class="chips-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Concept Starters:</span>
+            <button type="button" class="chip-btn" data-insert="In my implementation, I normalized vectors to L2 unit length so that cosine similarity directly equals dot product for fast vector search."><i class="fa-solid fa-plus"></i> Vector Normalization</button>
+            <button type="button" class="chip-btn" data-insert="We combined sparse BM25 keyword matching with dense vector embeddings using Reciprocal Rank Fusion (RRF) to score combined candidates."><i class="fa-solid fa-plus"></i> Hybrid Search & RRF</button>
+            <button type="button" class="chip-btn" data-insert="In LangGraph, we defined a stateful graph with typed State schemas, conditional routing edges, and persistent checkpointers."><i class="fa-solid fa-plus"></i> LangGraph State</button>
+            <button type="button" class="chip-btn" data-insert="Model Context Protocol (MCP) standardizes LLM tool discovery over JSON-RPC 2.0 transport with strict schema validation."><i class="fa-solid fa-plus"></i> MCP JSON-RPC</button>
+          </div>
+
+          <!-- Chat Answer Input Form -->
+          <div class="chat-input-area glass-panel">
+            <form id="answerForm" class="answer-form">
+              <div class="textarea-wrapper">
+                <textarea id="answerInput" placeholder="Type your technical response here... Explain algorithms, tools, and engineering trade-offs (Press Shift+Enter for newline, Enter to send)" rows="3" required></textarea>
+              </div>
+              <button type="submit" id="sendAnswerBtn" class="btn btn-submit">
+                <span>Submit Answer</span> <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </form>
+            <div class="input-hints">
+              <span><i class="fa-solid fa-lightbulb text-amber"></i> Tip: Evaluated on technical concept accuracy (10% participation + 90% correctness ratio).</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CUSTOM CANDIDATE PROFILE CREATOR MODAL -->
+        <div id="addCandidateModal" class="modal-overlay hidden">
+          <div class="modal-card modal-sm glass-panel">
+            <button id="closeCandidateModalBtn" class="modal-close-btn">&times;</button>
+            <div class="modal-header">
+              <h2><i class="fa-solid fa-user-plus text-cyan"></i> Add Candidate Profile</h2>
+              <p class="subtitle">Create a new synthetic candidate profile for interview testing</p>
+            </div>
+            <form id="addCandidateForm" class="modal-form">
+              <div class="form-group">
+                <label>Candidate Full Name</label>
+                <input type="text" id="newCandName" placeholder="e.g. Maya Lin" required class="styled-input">
+              </div>
+              <div class="form-group">
+                <label>Experience Level</label>
+                <select id="newCandLevel" class="styled-select">
+                  <option value="Junior AI Engineer">Junior AI Engineer</option>
+                  <option value="Mid-Level AI Engineer" selected>Mid-Level AI Engineer</option>
+                  <option value="Senior AI Systems Architect">Senior AI Systems Architect</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Strongest Domain Proficiencies (Comma Separated)</label>
+                <input type="text" id="newCandTopics" placeholder="e.g. Vector Search, LangChain, MCP" class="styled-input">
+              </div>
+              <div class="modal-form-actions">
+                <button type="button" id="cancelCandidateModalBtn" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Candidate</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- FINAL EVALUATION REPORT MODAL -->
+        <div id="evaluationModal" class="modal-overlay hidden">
+          <div class="modal-card glass-panel">
+            <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+
+            <div class="report-header">
+              <div class="report-title-group">
+                <span class="report-badge"><i class="fa-solid fa-award"></i> Candidate Assessment Report</span>
+                <h2 id="reportCandidateName">Alex Chen</h2>
+                <span id="reportCandidateLevel" class="subtitle">Mid-Level AI Engineer</span>
+              </div>
+
+              <div class="hiring-badge-container">
+                <!-- SVG Gauge Ring -->
+                <div class="gauge-box">
+                  <svg class="gauge-svg" viewBox="0 0 100 100">
+                    <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                    <circle id="gaugeFill" class="gauge-fill" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                  </svg>
+                  <div id="overallScoreCircle" class="score-text">0%</div>
+                </div>
+                <div id="hiringRecommendationBadge" class="badge-verdict">Strong Hire</div>
+              </div>
+            </div>
+
+            <div class="report-body" id="certificatePrintArea">
+              <!-- Printable Certificate Header Banner -->
+              <div class="cert-header-banner">
+                <i class="fa-solid fa-award cert-icon"></i>
+                <div>
+                  <h3 class="cert-title">AI ENGINEERING COHORT CERTIFICATION</h3>
+                  <span class="cert-sub">Official Technical Skill Evaluation Transcript</span>
+                </div>
+              </div>
+
+              <!-- Executive Summary -->
+              <div class="report-section">
+                <h3><i class="fa-solid fa-align-left"></i> Executive Evaluation Summary</h3>
+                <p id="reportSummaryText" class="summary-box"></p>
+              </div>
+
+              <!-- Rubric Scores Grid -->
+              <div class="report-section">
+                <h3><i class="fa-solid fa-chart-radar"></i> Competency Rubric Scores</h3>
+                <div class="rubric-grid">
+                  <div class="rubric-card">
+                    <div class="rubric-head">
+                      <span class="rubric-label"><i class="fa-solid fa-bullseye"></i> Technical Accuracy</span>
+                      <span id="scoreAccuracyVal" class="rubric-val">0%</span>
+                    </div>
+                    <div class="rubric-bar-bg"><div id="scoreAccuracy" class="rubric-bar-fill" style="width: 0%;"></div></div>
+                  </div>
+                  <div class="rubric-card">
+                    <div class="rubric-head">
+                      <span class="rubric-label"><i class="fa-solid fa-diagram-project"></i> System Design Depth</span>
+                      <span id="scoreDesignVal" class="rubric-val">0%</span>
+                    </div>
+                    <div class="rubric-bar-bg"><div id="scoreDesign" class="rubric-bar-fill fill-purple" style="width: 0%;"></div></div>
+                  </div>
+                  <div class="rubric-card">
+                    <div class="rubric-head">
+                      <span class="rubric-label"><i class="fa-solid fa-comments"></i> Communication Clarity</span>
+                      <span id="scoreCommVal" class="rubric-val">0%</span>
+                    </div>
+                    <div class="rubric-bar-bg"><div id="scoreComm" class="rubric-bar-fill fill-cyan" style="width: 0%;"></div></div>
+                  </div>
+                  <div class="rubric-card">
+                    <div class="rubric-head">
+                      <span class="rubric-label"><i class="fa-solid fa-screwdriver-wrench"></i> Tool Mastery</span>
+                      <span id="scoreToolVal" class="rubric-val">0%</span>
+                    </div>
+                    <div class="rubric-bar-bg"><div id="scoreTool" class="rubric-bar-fill fill-amber" style="width: 0%;"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Strengths & Growth Areas Split -->
+              <div class="report-grid-2col">
+                <div class="report-section">
+                  <h3><i class="fa-solid fa-circle-check text-success"></i> Key Technical Strengths</h3>
+                  <ul id="keyStrengthsList" class="styled-list strengths-list"></ul>
+                </div>
+                <div class="report-section">
+                  <h3><i class="fa-solid fa-triangle-exclamation text-amber"></i> Recommended Growth Areas</h3>
+                  <ul id="growthAreasList" class="styled-list growth-list"></ul>
+                </div>
+              </div>
+
+              <!-- Day-by-Day Performance Breakdown -->
+              <div class="report-section">
+                <h3><i class="fa-solid fa-calendar-days"></i> Curriculum Days Assessment Breakdown</h3>
+                <div id="dayBreakdownTable" class="breakdown-table"></div>
+              </div>
+            </div>
+
+            <div class="report-footer">
+              <button id="printCertBtn" class="btn btn-primary"><i class="fa-solid fa-print"></i> Print / Export PDF Certificate</button>
+              <button id="downloadReportBtn" class="btn btn-secondary"><i class="fa-solid fa-download"></i> Export JSON Report</button>
+              <button id="restartBtn" class="btn btn-secondary"><i class="fa-solid fa-arrow-rotate-right"></i> Return to Home</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

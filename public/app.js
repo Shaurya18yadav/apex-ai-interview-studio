@@ -496,7 +496,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
           try {
             const res = await fetch(`/api/candidates/${c.id}`, { method: 'DELETE' });
-            const data = await res.json();
+            let data;
+            const contentType = res.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              data = await res.json();
+            } else {
+              data = { success: res.ok, message: 'Candidate deleted successfully.' };
+            }
+
             if (data.success) {
               if (selectedCandidate && selectedCandidate.id === c.id) {
                 selectedCandidate = null;
@@ -562,7 +569,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(`/api/candidates/${selectedCandidate.id}`, {
           method: 'DELETE'
         });
-        const data = await res.json();
+        let data;
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          data = await res.json();
+        } else {
+          data = { success: res.ok, message: 'Candidate deleted successfully.' };
+        }
+
         if (data.success) {
           const deletedName = selectedCandidate.name;
           selectedCandidate = null;

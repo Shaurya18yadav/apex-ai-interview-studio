@@ -222,29 +222,33 @@ app.delete('/api/candidates/:id', (req, res) => {
   try {
     const { id } = req.params;
     const candidatesPath = path.join(__dirname, 'candidates.json');
-    let candidates = [];
+    let data = { candidates: [] };
     
     if (fs.existsSync(candidatesPath)) {
-      candidates = JSON.parse(fs.readFileSync(candidatesPath, 'utf-8'));
+      const raw = fs.readFileSync(candidatesPath, 'utf-8');
+      const parsed = JSON.parse(raw);
+      data = Array.isArray(parsed) ? { candidates: parsed } : parsed;
     }
 
-    const existingCandidate = candidates.find(c => c.id === id);
+    const candidatesList = data.candidates || [];
+    const existingCandidate = candidatesList.find(c => c.id === id);
 
     if (!existingCandidate) {
       return res.status(404).json({ error: `Candidate ${id} not found` });
     }
 
-    candidates = candidates.filter(c => c.id !== id);
-    fs.writeFileSync(candidatesPath, JSON.stringify(candidates, null, 2));
+    data.candidates = candidatesList.filter(c => c.id !== id);
+    fs.writeFileSync(candidatesPath, JSON.stringify(data, null, 2));
     agent.loadData();
 
     res.json({
       success: true,
       message: `Candidate ${existingCandidate.name} (${id}) deleted successfully`,
       deleted_id: id,
-      remaining_count: candidates.length
+      remaining_count: data.candidates.length
     });
   } catch (err) {
+    console.error('Delete candidate error:', err);
     res.status(500).json({ error: 'Failed to delete candidate', message: err.message });
   }
 });

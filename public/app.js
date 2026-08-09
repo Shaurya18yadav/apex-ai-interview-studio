@@ -609,18 +609,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const screenRatio = brightScreenPixels / totalRegionPixels;
 
-      // Mobile Phone Screen Detection (Density > 5% of scan region)
-      if (screenRatio > 0.05) {
-        phoneStreak++;
+      // Update proctor HUD display badge for visual monitoring
+      if (screenRatio > 0.22) {
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'Mobile Phone! ⚠️';
-        
-        // Triggers violation strike on 2 consecutive frames (3.0s hold) with 12s cooldown
-        if (phoneStreak >= 2 && (Date.now() - lastPhoneViolationTime > 12000)) {
-          lastPhoneViolationTime = Date.now();
-          recordCheatingViolation('Mobile Phone / Secondary Digital Device detected in webcam feed');
-        }
       } else {
-        phoneStreak = 0;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'None';
       }
     }, 1500);

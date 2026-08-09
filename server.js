@@ -221,7 +221,13 @@ app.get('/api/interview/session/:session_id', (req, res) => {
 app.delete('/api/candidates/:id', (req, res) => {
   try {
     const { id } = req.params;
-    let candidates = agent.getCandidates();
+    const candidatesPath = path.join(__dirname, 'candidates.json');
+    let candidates = [];
+    
+    if (fs.existsSync(candidatesPath)) {
+      candidates = JSON.parse(fs.readFileSync(candidatesPath, 'utf-8'));
+    }
+
     const existingCandidate = candidates.find(c => c.id === id);
 
     if (!existingCandidate) {
@@ -229,7 +235,6 @@ app.delete('/api/candidates/:id', (req, res) => {
     }
 
     candidates = candidates.filter(c => c.id !== id);
-    const candidatesPath = path.join(__dirname, 'candidates.json');
     fs.writeFileSync(candidatesPath, JSON.stringify(candidates, null, 2));
     agent.loadData();
 

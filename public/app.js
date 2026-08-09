@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (toggleWebcamBtn) {
         toggleWebcamBtn.classList.add('btn-danger');
         toggleWebcamBtn.classList.remove('btn-secondary');
-        if (activeSession && activeSession.status === 'active') {
+        if (activeSession && activeSession.status !== 'completed' && activeSession.status !== 'disqualified') {
           toggleWebcamBtn.disabled = true;
           toggleWebcamBtn.title = 'Camera is required and locked during the live technical interview';
         }
@@ -548,12 +548,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const videoTrack = webcamStream.getVideoTracks()[0];
       if (videoTrack) {
         videoTrack.onended = () => {
-          if (activeSession && activeSession.status === 'active') {
+          if (activeSession && activeSession.status !== 'completed' && activeSession.status !== 'disqualified') {
             recordCheatingViolation('Camera stream disconnected or turned off');
           }
         };
         videoTrack.onmute = () => {
-          if (activeSession && activeSession.status === 'active') {
+          if (activeSession && activeSession.status !== 'completed' && activeSession.status !== 'disqualified') {
             recordCheatingViolation('Camera video feed muted or covered');
           }
         };
@@ -587,12 +587,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let brightScreenPixels = 0;
       let totalRegionPixels = 0;
-      // Scan handheld center-lower region of webcam stream
+      // Scan handheld central lower region of webcam stream
       const startY = Math.floor(vh * 0.30);
-      const endY = Math.floor(vh * 0.92);
+      const endY = Math.floor(vh * 0.95);
 
       for (let y = startY; y < endY; y++) {
-        for (let x = 15; x < vw - 15; x++) {
+        for (let x = 10; x < vw - 10; x++) {
           const idx = (y * vw + x) * 4;
           const r = data[idx];
           const g = data[idx + 1];
@@ -600,8 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
 
           totalRegionPixels++;
-          // High-intensity screen display luminance check
-          if (luminance > 245 && Math.abs(r - g) < 20 && Math.abs(g - b) < 20) {
+          // Mobile Phone Display Screen Luminance Check (Backlit screen luminance > 180)
+          if (luminance > 180 && (Math.abs(r - g) < 40 || b > 140)) {
             brightScreenPixels++;
           }
         }
@@ -609,13 +609,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const screenRatio = brightScreenPixels / totalRegionPixels;
 
-      // Mobile Phone Screen Visual Detection (Density > 15% of scan region)
-      if (screenRatio > 0.15) {
+      // Mobile Phone Screen Detection (Density > 5% of scan region)
+      if (screenRatio > 0.05) {
         phoneStreak++;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'Mobile Phone! ⚠️';
-        if (proctorAlertBanner && alertBannerText && phoneStreak >= 2) {
-          alertBannerText.textContent = `⚠️ Security Warning: Digital Device / Mobile Phone Screen detected in video stream!`;
-          proctorAlertBanner.classList.remove('hidden');
+        
+        // Triggers violation strike on 2 consecutive frames (3.0s hold) with 12s cooldown
+        if (phoneStreak >= 2 && (Date.now() - lastPhoneViolationTime > 12000)) {
+          lastPhoneViolationTime = Date.now();
+          recordCheatingViolation('Mobile Phone / Secondary Digital Device detected in webcam feed');
         }
       } else {
         phoneStreak = 0;
@@ -978,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Toggle Camera Manual Button (Locked during active interview)
   if (toggleWebcamBtn) {
     toggleWebcamBtn.addEventListener('click', async () => {
-      if (activeSession && activeSession.status === 'active') {
+      if (activeSession && activeSession.status !== 'completed' && activeSession.status !== 'disqualified') {
         recordCheatingViolation('Attempted to turn off camera during live interview');
         alert('⚠️ Security Alert: Camera stream is strictly required and cannot be disabled during the interview!');
         return;

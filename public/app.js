@@ -467,15 +467,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="tags-wrapper">${tagsHtml}</div>
 
-        <button class="btn btn-primary btn-launch-cand">
-          <i class="fa-solid fa-bolt"></i> Select & Start Interview
-        </button>
+        <div class="card-action-row" style="display:flex; gap:8px; width:100%;">
+          <button type="button" class="btn btn-primary btn-launch-cand" style="flex:1;">
+            <i class="fa-solid fa-bolt"></i> Select & Start Interview
+          </button>
+          <button type="button" class="btn btn-danger btn-delete-cand" style="padding: 8px 12px; font-size:12px;" title="Delete Candidate">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
       `;
+
+      const launchBtn = card.querySelector('.btn-launch-cand');
+      if (launchBtn) {
+        launchBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          candidateSelect.value = c.id;
+          candidateSelect.dispatchEvent(new Event('change'));
+          startInterviewBtn.click();
+        });
+      }
+
+      const deleteBtn = card.querySelector('.btn-delete-cand');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const confirmDelete = confirm(`Are you sure you want to delete candidate "${c.name}" from the database? This action cannot be undone.`);
+          if (!confirmDelete) return;
+
+          try {
+            const res = await fetch(`/api/candidates/${c.id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              if (selectedCandidate && selectedCandidate.id === c.id) {
+                selectedCandidate = null;
+                candidateCard.classList.add('hidden');
+                startInterviewBtn.disabled = true;
+              }
+              await fetchCandidates();
+              alert(`Candidate "${c.name}" deleted successfully.`);
+            } else {
+              alert('Error deleting candidate: ' + (data.error || 'Unknown error'));
+            }
+          } catch (err) {
+            alert('Failed to delete candidate: ' + err.message);
+          }
+        });
+      }
 
       card.addEventListener('click', () => {
         candidateSelect.value = c.id;
         candidateSelect.dispatchEvent(new Event('change'));
-        startInterviewBtn.click();
       });
 
       homeCandidateGrid.appendChild(card);

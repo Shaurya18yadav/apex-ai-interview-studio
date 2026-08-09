@@ -48,6 +48,26 @@ function get(path) {
   });
 }
 
+function del(path) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(`${BASE_URL}${path}`, {
+      method: 'DELETE'
+    }, (res) => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        try {
+          resolve({ status: res.statusCode, body: JSON.parse(body) });
+        } catch (e) {
+          resolve({ status: res.statusCode, raw: body });
+        }
+      });
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
 async function runTest() {
   console.log('🧪 Starting End-to-End Automated Verification for AI Interview Agent...\n');
 
@@ -143,6 +163,21 @@ async function runTest() {
   console.log(`• System Design Depth: ${fb.rubric_scores.system_design_depth}%`);
   console.log(`• Key Strengths Count: ${fb.key_strengths.length}`);
   console.log(`• Growth Areas Count: ${fb.growth_areas.length}`);
+
+  // Step 7: Verify Candidate Creation and Deletion
+  console.log('\n7. Testing POST /api/candidates and DELETE /api/candidates/:id...');
+  const createRes = await post('/api/candidates', { name: 'Test Candidate', experience_level: 'Junior AI Engineer' });
+  if (createRes.status !== 200 || !createRes.body.candidate) {
+    throw new Error(`Failed candidate creation: ${JSON.stringify(createRes)}`);
+  }
+  const createdCand = createRes.body.candidate;
+  console.log(`   ✅ Candidate created: ${createdCand.name} (${createdCand.id})`);
+
+  const deleteRes = await del(`/api/candidates/${createdCand.id}`);
+  if (deleteRes.status !== 200 || !deleteRes.body.success) {
+    throw new Error(`Failed candidate deletion: ${JSON.stringify(deleteRes)}`);
+  }
+  console.log(`   ✅ Candidate deleted successfully: ${deleteRes.body.message}`);
 
   console.log('\n✨ ALL E2E AUTOMATED TESTS PASSED SUCCESSFULLY! ✨\n');
 }

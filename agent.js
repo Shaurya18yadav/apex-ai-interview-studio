@@ -6,16 +6,74 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load Data
 const curriculumPath = path.join(__dirname, 'curriculum.json');
 const candidatesPath = path.join(__dirname, 'candidates.json');
 
+// Candidate data in-memory cache and serverless fallback
+let cachedCandidatesData = null;
+
+function getCandidatesData() {
+  if (cachedCandidatesData) {
+    return cachedCandidatesData;
+  }
+
+  const tmpPath = path.join('/tmp', 'candidates.json');
+
+  if (fs.existsSync(tmpPath)) {
+    try {
+      const raw = fs.readFileSync(tmpPath, 'utf-8');
+      const parsed = JSON.parse(raw);
+      cachedCandidatesData = Array.isArray(parsed) ? { candidates: parsed } : parsed;
+      return cachedCandidatesData;
+    } catch (e) {
+      console.warn('Failed reading from /tmp/candidates.json:', e.message);
+    }
+  }
+
+  if (fs.existsSync(candidatesPath)) {
+    try {
+      const raw = fs.readFileSync(candidatesPath, 'utf-8');
+      const parsed = JSON.parse(raw);
+      cachedCandidatesData = Array.isArray(parsed) ? { candidates: parsed } : parsed;
+      return cachedCandidatesData;
+    } catch (e) {
+      console.warn('Failed reading from candidates.json:', e.message);
+    }
+  }
+
+  cachedCandidatesData = { candidates: [] };
+  return cachedCandidatesData;
+}
+
+function saveCandidatesData(data) {
+  cachedCandidatesData = Array.isArray(data) ? { candidates: data } : (data || { candidates: [] });
+  const jsonStr = JSON.stringify(cachedCandidatesData, null, 2);
+
+  // 1. Try writing to local project candidates.json
+  try {
+    fs.writeFileSync(candidatesPath, jsonStr);
+    return true;
+  } catch (err) {
+    console.warn('Could not write to local candidates.json (read-only filesystem on Vercel):', err.message);
+  }
+
+  // 2. Fallback: try writing to /tmp directory on Vercel
+  try {
+    const tmpPath = path.join('/tmp', 'candidates.json');
+    fs.writeFileSync(tmpPath, jsonStr);
+    return true;
+  } catch (tmpErr) {
+    console.warn('Could not write to /tmp/candidates.json:', tmpErr.message);
+  }
+
+  return true;
+}
+
 function loadData() {
   const curriculumRaw = fs.readFileSync(curriculumPath, 'utf-8');
-  const candidatesRaw = fs.readFileSync(candidatesPath, 'utf-8');
   return {
     curriculumData: JSON.parse(curriculumRaw),
-    candidatesData: JSON.parse(candidatesRaw)
+    candidatesData: getCandidatesData()
   };
 }
 
@@ -590,6 +648,8 @@ function updateSessionPersona(sessionId, persona) {
 
 module.exports = {
   loadData,
+  getCandidatesData,
+  saveCandidatesData,
   startSession,
   processTurn,
   getSession,

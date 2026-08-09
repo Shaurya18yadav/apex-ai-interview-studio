@@ -75,11 +75,10 @@ app.post('/api/candidates', async (req, res) => {
       return res.status(400).json({ error: 'name and experience_level are required' });
     }
 
-    const candidatesPath = path.join(__dirname, 'candidates.json');
-    const rawData = fs.readFileSync(candidatesPath, 'utf-8');
-    const data = JSON.parse(rawData);
+    const data = agent.getCandidatesData();
+    const candidatesList = data.candidates || [];
 
-    const newId = `cand_${String((data.candidates || []).length + 1).padStart(3, '0')}`;
+    const newId = `cand_${String(candidatesList.length + 1).padStart(3, '0')}`;
     const newCandidate = {
       id: newId,
       name,
@@ -92,8 +91,9 @@ app.post('/api/candidates', async (req, res) => {
       }
     };
 
-    data.candidates.push(newCandidate);
-    fs.writeFileSync(candidatesPath, JSON.stringify(data, null, 2));
+    candidatesList.push(newCandidate);
+    data.candidates = candidatesList;
+    agent.saveCandidatesData(data);
 
     res.json({ message: 'Candidate created successfully', candidate: newCandidate });
   } catch (err) {
@@ -180,16 +180,14 @@ app.post('/api/interview/disqualify', async (req, res) => {
       day_breakdown: []
     };
 
-    // Update candidates.json
+    // Update candidates record
     try {
-      const candidatesPath = path.join(__dirname, 'candidates.json');
-      const rawData = fs.readFileSync(candidatesPath, 'utf-8');
-      const data = JSON.parse(rawData);
-      const cand = data.candidates.find(c => c.id === session.candidate_id);
+      const data = agent.getCandidatesData();
+      const cand = (data.candidates || []).find(c => c.id === session.candidate_id);
       if (cand) {
         cand.status = 'Disqualified';
         cand.cheating_violations = violations || 3;
-        fs.writeFileSync(candidatesPath, JSON.stringify(data, null, 2));
+        agent.saveCandidatesData(data);
       }
     } catch (e) {
       console.error('Failed to update candidate record:', e.message);
@@ -221,15 +219,7 @@ app.get('/api/interview/session/:session_id', (req, res) => {
 app.delete('/api/candidates/:id', (req, res) => {
   try {
     const { id } = req.params;
-    const candidatesPath = path.join(__dirname, 'candidates.json');
-    let data = { candidates: [] };
-    
-    if (fs.existsSync(candidatesPath)) {
-      const raw = fs.readFileSync(candidatesPath, 'utf-8');
-      const parsed = JSON.parse(raw);
-      data = Array.isArray(parsed) ? { candidates: parsed } : parsed;
-    }
-
+    const data = agent.getCandidatesData();
     const candidatesList = data.candidates || [];
     const existingCandidate = candidatesList.find(c => c.id === id);
 
@@ -238,8 +228,7 @@ app.delete('/api/candidates/:id', (req, res) => {
     }
 
     data.candidates = candidatesList.filter(c => c.id !== id);
-    fs.writeFileSync(candidatesPath, JSON.stringify(data, null, 2));
-    agent.loadData();
+    agent.saveCandidatesData(data);
 
     res.json({
       success: true,

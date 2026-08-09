@@ -398,11 +398,13 @@
           "MCP SDK",
           "LangChain"
         ]
-      }
+      },
+      "status": "Disqualified",
+      "cheating_violations": 3
     },
     {
       "id": "cand_006",
-      "name": "lina",
+      "name": "mati",
       "experience_level": "Mid-Level AI Engineer",
       "completed_missions": [
         1,
@@ -415,7 +417,8 @@
       "skipped_topics": [],
       "learning_signals": {
         "strongest_topics": [
-          "vector and dsa"
+          "LLM Systems",
+          "Vector Search"
         ],
         "areas_for_growth": [
           "Production Telemetry"

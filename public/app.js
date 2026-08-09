@@ -1082,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const scoringFormulaModal = document.getElementById('scoringFormulaModal');
   const closeScoringModalBtn = document.getElementById('closeScoringModalBtn');
 
-  // 1. Curriculum Card -> Curriculum Overview Modal
+  // 1. Curriculum Card -> Curriculum Overview Modal Handlers
   if (bannerCurriculumCard && curriculumOverviewModal) {
     bannerCurriculumCard.addEventListener('click', () => {
       curriculumOverviewModal.classList.remove('hidden');
@@ -1093,35 +1093,85 @@ document.addEventListener('DOMContentLoaded', () => {
       curriculumOverviewModal.classList.add('hidden');
     });
   }
+  document.querySelectorAll('.jump-module-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      if (curriculumOverviewModal) curriculumOverviewModal.classList.add('hidden');
+      const scopeElem = document.querySelector('.curriculum-scope-section') || document.querySelector('.home-section:last-of-type');
+      if (scopeElem) scopeElem.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 
-  // 2. Candidates Card -> Candidate Roster Overview Modal
+  // 2. Candidates Card -> Candidate Roster Overview Modal Handlers
+  const modalAddCandBtn = document.getElementById('modalAddCandBtn');
+  if (modalAddCandBtn) {
+    modalAddCandBtn.addEventListener('click', () => {
+      if (candidatesOverviewModal) candidatesOverviewModal.classList.add('hidden');
+      openCandidateModal();
+    });
+  }
+
+  function renderCandidatesModalRoster() {
+    if (!candidatesModalRosterList) return;
+    candidatesModalRosterList.innerHTML = '';
+    candidates.forEach(c => {
+      const item = document.createElement('div');
+      item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.6); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);';
+      item.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="avatar" style="width:32px; height:32px; font-size:12px;">${c.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div>
+            <strong style="font-size:13px; color:var(--text-main);">${c.name}</strong>
+            <div style="font-size:11px; color:var(--text-muted);">${c.experience_level}</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-primary btn-xs launch-cand-modal-btn" data-id="${c.id}">Select</button>
+          <button class="btn btn-danger btn-xs delete-cand-modal-btn" data-id="${c.id}" title="Delete Candidate"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      `;
+      item.querySelector('.launch-cand-modal-btn').addEventListener('click', () => {
+        candidateSelect.value = c.id;
+        candidateSelect.dispatchEvent(new Event('change'));
+        candidatesOverviewModal.classList.add('hidden');
+        const gridElem = document.getElementById('homeCandidateGrid');
+        if (gridElem) gridElem.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      item.querySelector('.delete-cand-modal-btn').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const confirmDelete = confirm(`Are you sure you want to delete candidate "${c.name}" from the database?`);
+        if (!confirmDelete) return;
+
+        try {
+          const res = await fetch(`/api/candidates/${c.id}`, { method: 'DELETE' });
+          let data;
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            data = await res.json();
+          } else {
+            data = { success: res.ok, message: 'Candidate deleted' };
+          }
+          if (data.success) {
+            if (selectedCandidate && selectedCandidate.id === c.id) {
+              selectedCandidate = null;
+              candidateCard.classList.add('hidden');
+              startInterviewBtn.disabled = true;
+            }
+            await fetchCandidates();
+            renderCandidatesModalRoster();
+          }
+        } catch (err) {
+          alert('Failed to delete candidate: ' + err.message);
+        }
+      });
+
+      candidatesModalRosterList.appendChild(item);
+    });
+  }
+
   if (bannerCandidatesCard && candidatesOverviewModal) {
     bannerCandidatesCard.addEventListener('click', () => {
-      if (candidatesModalRosterList) {
-        candidatesModalRosterList.innerHTML = '';
-        candidates.forEach(c => {
-          const item = document.createElement('div');
-          item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.6); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);';
-          item.innerHTML = `
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="avatar" style="width:32px; height:32px; font-size:12px;">${c.name.split(' ').map(n=>n[0]).join('')}</div>
-              <div>
-                <strong style="font-size:13px; color:var(--text-main);">${c.name}</strong>
-                <div style="font-size:11px; color:var(--text-muted);">${c.experience_level}</div>
-              </div>
-            </div>
-            <button class="btn btn-secondary btn-xs launch-cand-modal-btn" data-id="${c.id}">Select Profile</button>
-          `;
-          item.querySelector('.launch-cand-modal-btn').addEventListener('click', () => {
-            candidateSelect.value = c.id;
-            candidateSelect.dispatchEvent(new Event('change'));
-            candidatesOverviewModal.classList.add('hidden');
-            const gridElem = document.getElementById('homeCandidateGrid');
-            if (gridElem) gridElem.scrollIntoView({ behavior: 'smooth' });
-          });
-          candidatesModalRosterList.appendChild(item);
-        });
-      }
+      renderCandidatesModalRoster();
       candidatesOverviewModal.classList.remove('hidden');
     });
   }
@@ -1131,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Personas Card -> Personas Overview Modal
+  // 3. Personas Card -> Personas Overview Modal Handlers
   if (bannerPersonasCard && personasOverviewModal) {
     bannerPersonasCard.addEventListener('click', () => {
       personasOverviewModal.classList.remove('hidden');
@@ -1151,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4. Scoring Card -> Symmetrical Scoring Formula Modal
+  // 4. Scoring Card -> Symmetrical Scoring Formula Modal + Live Calculator Handlers
   if (bannerScoringCard && scoringFormulaModal) {
     bannerScoringCard.addEventListener('click', () => {
       scoringFormulaModal.classList.remove('hidden');
@@ -1162,6 +1212,43 @@ document.addEventListener('DOMContentLoaded', () => {
       scoringFormulaModal.classList.add('hidden');
     });
   }
+
+  // Interactive Live Score Calculator Logic
+  const simCompRange = document.getElementById('simCompRange');
+  const simTechRange = document.getElementById('simTechRange');
+  const simCompVal = document.getElementById('simCompVal');
+  const simTechVal = document.getElementById('simTechVal');
+  const simResultScore = document.getElementById('simResultScore');
+
+  function updateLiveScoreCalc() {
+    if (!simCompRange || !simTechRange || !simResultScore) return;
+    const comp = parseInt(simCompRange.value, 10);
+    const tech = parseInt(simTechRange.value, 10);
+    if (simCompVal) simCompVal.textContent = `${comp}%`;
+    if (simTechVal) simTechVal.textContent = `${tech}%`;
+
+    const finalScore = (comp * 0.1) + (tech * 0.9);
+    const formatted = finalScore.toFixed(1);
+
+    let verdict = 'Strong Hire';
+    let colorHex = '#34d399';
+    if (finalScore < 50) {
+      verdict = 'Needs Practice';
+      colorHex = '#f43f5e';
+    } else if (finalScore < 70) {
+      verdict = 'Hire with Reservations';
+      colorHex = '#f59e0b';
+    } else if (finalScore < 85) {
+      verdict = 'Hire';
+      colorHex = '#22d3ee';
+    }
+
+    simResultScore.textContent = `${formatted}% — ${verdict}`;
+    simResultScore.style.color = colorHex;
+  }
+
+  if (simCompRange) simCompRange.addEventListener('input', updateLiveScoreCalc);
+  if (simTechRange) simTechRange.addEventListener('input', updateLiveScoreCalc);
 
   restartBtn.addEventListener('click', () => {
     evaluationModal.classList.add('hidden');

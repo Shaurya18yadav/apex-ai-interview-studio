@@ -582,32 +582,55 @@
       </div>
       <div class="modal-body" style="padding: 20px;">
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
-          Apex AI dynamically selects interview questions across 31 structured cohort learning modules.
+          Apex AI dynamically selects interview questions across 31 structured cohort learning modules. Click any module to inspect.
         </p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #22d3ee; margin: 0 0 4px 0;"><i class="fa-solid fa-cube"></i> Module 1 (Days 1–5)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">LLM Fundamentals, Embeddings Math & Transformers</div>
+          <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #22d3ee; margin: 0 0 4px 0;"><i class="fa-solid fa-cube"></i> Module 1 (Days 1–5)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">LLM Fundamentals, Embeddings Math & Transformers</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="1">Explore Module 1</button>
           </div>
-          <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #818cf8; margin: 0 0 4px 0;"><i class="fa-solid fa-database"></i> Module 2 (Days 6–10)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">Document Chunking, Vector DBs & Naive RAG</div>
+
+          <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #818cf8; margin: 0 0 4px 0;"><i class="fa-solid fa-database"></i> Module 2 (Days 6–10)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">Document Chunking, Vector DBs & Naive RAG</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="2">Explore Module 2</button>
           </div>
-          <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #c084fc; margin: 0 0 4px 0;"><i class="fa-solid fa-diagram-project"></i> Module 3 (Days 11–15)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">Advanced RAG: Query Decomposition, HyDE & RAGAS</div>
+
+          <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #c084fc; margin: 0 0 4px 0;"><i class="fa-solid fa-diagram-project"></i> Module 3 (Days 11–15)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">Advanced RAG: Query Decomposition, HyDE & RAGAS</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="3">Explore Module 3</button>
           </div>
-          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #34d399; margin: 0 0 4px 0;"><i class="fa-solid fa-robot"></i> Module 4 (Days 16–20)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">Agentic AI Concepts, ReAct & LangGraph</div>
+
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #34d399; margin: 0 0 4px 0;"><i class="fa-solid fa-robot"></i> Module 4 (Days 16–20)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">Agentic AI Concepts, ReAct & LangGraph</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="4">Explore Module 4</button>
           </div>
-          <div style="background: rgba(20, 184, 166, 0.08); border: 1px solid rgba(20, 184, 166, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #2dd4bf; margin: 0 0 4px 0;"><i class="fa-solid fa-plug"></i> Module 5 (Days 21–25)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">Model Context Protocol (MCP) Server Development</div>
+
+          <div style="background: rgba(20, 184, 166, 0.08); border: 1px solid rgba(20, 184, 166, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #2dd4bf; margin: 0 0 4px 0;"><i class="fa-solid fa-plug"></i> Module 5 (Days 21–25)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">Model Context Protocol (MCP) Server Development</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="5">Explore Module 5</button>
           </div>
-          <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 14px; border-radius: 8px;">
-            <h5 style="color: #fbbf24; margin: 0 0 4px 0;"><i class="fa-solid fa-server"></i> Module 6 & 7 (Days 26–31)</h5>
-            <div style="font-size: 12px; color: var(--text-muted);">FastAPI, Docker & Production Capstone</div>
+
+          <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 14px; border-radius: 8px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h5 style="color: #fbbf24; margin: 0 0 4px 0;"><i class="fa-solid fa-server"></i> Module 6 & 7 (Days 26–31)</h5>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom:10px;">FastAPI, Docker & Production Capstone</div>
+            </div>
+            <button class="btn btn-secondary btn-xs jump-module-btn" data-mod="6">Explore Module 6</button>
           </div>
         </div>
       </div>
@@ -625,10 +648,13 @@
         <button id="closeCandidatesModalBtn" class="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body" style="padding: 20px;">
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
-          Each synthetic candidate profile simulates a real-world developer with a distinct background and cohort progress.
-        </p>
-        <div id="candidatesModalRosterList" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+          <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+            Select any profile to start a live interview or delete from database.
+          </p>
+          <button id="modalAddCandBtn" class="btn btn-secondary btn-xs">+ Add Candidate</button>
+        </div>
+        <div id="candidatesModalRosterList" style="display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto;">
           <!-- Dynamically populated roster -->
         </div>
       </div>
@@ -654,7 +680,7 @@
                 Probes deep architectural trade-offs, vector search math, and memory scaling bounds.
               </p>
             </div>
-            <button class="btn btn-secondary btn-xs select-persona-modal-btn mt-3" data-persona="senior_architect">Select Persona</button>
+            <button class="btn btn-primary btn-xs select-persona-modal-btn mt-3" data-persona="senior_architect">Select Persona</button>
           </div>
 
           <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 14px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -664,7 +690,7 @@
                 Encouraging tone focusing on conceptual foundations and guided follow-ups.
               </p>
             </div>
-            <button class="btn btn-secondary btn-xs select-persona-modal-btn mt-3" data-persona="cohort_mentor">Select Persona</button>
+            <button class="btn btn-primary btn-xs select-persona-modal-btn mt-3" data-persona="cohort_mentor">Select Persona</button>
           </div>
 
           <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -674,14 +700,14 @@
                 High-bar rigorous evaluation on production edge cases, latency, and system security.
               </p>
             </div>
-            <button class="btn btn-secondary btn-xs select-persona-modal-btn mt-3" data-persona="faang_lead">Select Persona</button>
+            <button class="btn btn-primary btn-xs select-persona-modal-btn mt-3" data-persona="faang_lead">Select Persona</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 4. Symmetrical Scoring Formula Modal -->
+  <!-- 4. Symmetrical Scoring Formula Modal + Live Simulator -->
   <div id="scoringFormulaModal" class="modal-backdrop hidden">
     <div class="modal-card glass-panel" style="max-width: 680px;">
       <div class="modal-header">
@@ -699,7 +725,7 @@
           </p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; margin-bottom: 16px;">
           <!-- 10% Card -->
           <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 18px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
             <div>
@@ -728,6 +754,25 @@
             <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(99, 102, 241, 0.2); font-size: 11px; color: #c7d2fe; font-weight: 600; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-brain"></i> Real-time AI Evaluation
             </div>
+          </div>
+        </div>
+
+        <!-- Live Score Simulator Box -->
+        <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px;">
+          <h5 style="margin:0 0 10px 0; color:var(--text-main); font-size:13px;"><i class="fa-solid fa-sliders text-cyan"></i> Live Interactive Score Calculator</h5>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:10px;">
+            <div>
+              <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Completion (10%): <b id="simCompVal">80%</b></label>
+              <input type="range" id="simCompRange" min="0" max="100" value="80" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Technical Depth (90%): <b id="simTechVal">95%</b></label>
+              <input type="range" id="simTechRange" min="0" max="100" value="95" style="width:100%;">
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); padding:8px 12px; border-radius:6px; border:1px solid rgba(16,185,129,0.3);">
+            <span style="font-size:12px; color:var(--text-muted);">Simulated Final Result:</span>
+            <b id="simResultScore" style="color:#34d399; font-size:15px; font-family:var(--font-code);">93.5% — Strong Hire</b>
           </div>
         </div>
       </div>

@@ -600,8 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
 
           totalRegionPixels++;
-          // Mobile Phone Display Screen Luminance & Contrast Check (Display brightness > 200)
-          if (luminance > 200 && Math.abs(r - g) < 35 && Math.abs(g - b) < 35) {
+          // High-intensity screen display luminance check
+          if (luminance > 245 && Math.abs(r - g) < 20 && Math.abs(g - b) < 20) {
             brightScreenPixels++;
           }
         }
@@ -609,15 +609,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const screenRatio = brightScreenPixels / totalRegionPixels;
 
-      // Mobile Phone Screen Detection (Density > 9% of scan region)
-      if (screenRatio > 0.09) {
+      // Mobile Phone Screen Visual Detection (Density > 15% of scan region)
+      if (screenRatio > 0.15) {
         phoneStreak++;
         if (proctorDeviceStatus) proctorDeviceStatus.textContent = 'Mobile Phone! ⚠️';
-        
-        // Requires 2 consecutive frames (3.0s continuous hold) to trigger strike
-        if (phoneStreak >= 2 && (Date.now() - lastPhoneViolationTime > 10000)) {
-          lastPhoneViolationTime = Date.now();
-          recordCheatingViolation('Mobile Phone / Secondary Digital Device detected in webcam feed');
+        if (proctorAlertBanner && alertBannerText && phoneStreak >= 2) {
+          alertBannerText.textContent = `⚠️ Security Warning: Digital Device / Mobile Phone Screen detected in video stream!`;
+          proctorAlertBanner.classList.remove('hidden');
         }
       } else {
         phoneStreak = 0;

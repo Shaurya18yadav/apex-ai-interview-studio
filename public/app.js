@@ -1268,14 +1268,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (phoneCheckInterval) clearInterval(phoneCheckInterval);
   });
 
+  if (printCertBtn) {
+    printCertBtn.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
   downloadReportBtn.addEventListener('click', () => {
     if (!lastReportData) return;
     const blob = new Blob([JSON.stringify(lastReportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Interview_Report_${selectedCandidate.name.replace(/\s+/g, '_')}.json`;
+    a.download = `Interview_Report_${selectedCandidate ? selectedCandidate.name.replace(/\s+/g, '_') : 'Candidate'}.json`;
     a.click();
+  });
+
+  document.querySelectorAll('.module-chip').forEach(chip => {
+    chip.style.cursor = 'pointer';
+    chip.addEventListener('click', () => {
+      if (curriculumOverviewModal) curriculumOverviewModal.classList.remove('hidden');
+    });
   });
 
   // Toggle Camera Manual Button (Locked during active interview)

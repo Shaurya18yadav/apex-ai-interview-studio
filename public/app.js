@@ -420,6 +420,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  fetchCurriculumScope();
+
+  async function fetchCurriculumScope() {
+    try {
+      const res = await fetch('/api/curriculum');
+      const data = await res.json();
+      const curriculum = data.curriculum || [];
+      const bannerCurriculumVal = document.getElementById('bannerCurriculumVal');
+      if (bannerCurriculumVal) {
+        bannerCurriculumVal.textContent = `${curriculum.length} Days`;
+      }
+    } catch (err) {
+      console.error('Failed to fetch curriculum scope:', err);
+    }
+  }
+
   function populateCandidateSelect(candidatesList) {
     candidateSelect.innerHTML = '<option value="" disabled selected>Select candidate profile...</option>';
     candidatesList.forEach(c => {
@@ -428,6 +444,11 @@ document.addEventListener('DOMContentLoaded', () => {
       opt.textContent = `${c.name} (${c.experience_level})`;
       candidateSelect.appendChild(opt);
     });
+
+    const bannerCandidatesVal = document.getElementById('bannerCandidatesVal');
+    if (bannerCandidatesVal) {
+      bannerCandidatesVal.textContent = `${candidatesList.length} Profiles`;
+    }
 
     renderHomeCandidateGrid(candidatesList);
   }
@@ -1039,6 +1060,52 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeBreethDocsBtn && breethDocsModal) {
     closeBreethDocsBtn.addEventListener('click', () => {
       breethDocsModal.classList.add('hidden');
+    });
+  }
+
+  // Top Ribbon Stat Card Interactive Handlers
+  const bannerCurriculumCard = document.getElementById('bannerCurriculumCard');
+  const bannerCandidatesCard = document.getElementById('bannerCandidatesCard');
+  const bannerPersonasCard = document.getElementById('bannerPersonasCard');
+  const bannerScoringCard = document.getElementById('bannerScoringCard');
+  const scoringFormulaModal = document.getElementById('scoringFormulaModal');
+  const closeScoringModalBtn = document.getElementById('closeScoringModalBtn');
+
+  if (bannerCurriculumCard) {
+    bannerCurriculumCard.addEventListener('click', () => {
+      const scopeElem = document.querySelector('.curriculum-scope-section') || document.querySelector('.home-section:last-of-type');
+      if (scopeElem) scopeElem.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  if (bannerCandidatesCard) {
+    bannerCandidatesCard.addEventListener('click', () => {
+      const gridElem = document.getElementById('homeCandidateGrid');
+      if (gridElem) gridElem.scrollIntoView({ behavior: 'smooth' });
+      if (candidateSelect) candidateSelect.focus();
+    });
+  }
+
+  if (bannerPersonasCard) {
+    const personas = ['senior_architect', 'cohort_mentor', 'faang_lead'];
+    let personaIdx = 0;
+    bannerPersonasCard.addEventListener('click', () => {
+      personaIdx = (personaIdx + 1) % personas.length;
+      const targetPersona = personas[personaIdx];
+      const targetBtn = document.querySelector(`.persona-btn[data-persona="${targetPersona}"]`);
+      if (targetBtn) targetBtn.click();
+    });
+  }
+
+  if (bannerScoringCard && scoringFormulaModal) {
+    bannerScoringCard.addEventListener('click', () => {
+      scoringFormulaModal.classList.remove('hidden');
+    });
+  }
+
+  if (closeScoringModalBtn && scoringFormulaModal) {
+    closeScoringModalBtn.addEventListener('click', () => {
+      scoringFormulaModal.classList.add('hidden');
     });
   }
 

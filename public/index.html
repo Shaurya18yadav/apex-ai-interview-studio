@@ -263,31 +263,31 @@
 
           <!-- Stats Counter Banner Ribbon -->
           <div class="stats-ribbon">
-            <div class="ribbon-card glass-panel">
+            <div class="ribbon-card glass-panel clickable-ribbon" id="bannerCurriculumCard" style="cursor: pointer;" title="Click to view 31-day curriculum modules">
               <i class="fa-solid fa-calendar-days text-cyan"></i>
               <div>
-                <span class="ribbon-val">31 Days</span>
+                <span class="ribbon-val" id="bannerCurriculumVal">31 Days</span>
                 <span class="ribbon-lbl">Cohort Curriculum</span>
               </div>
             </div>
-            <div class="ribbon-card glass-panel">
+            <div class="ribbon-card glass-panel clickable-ribbon" id="bannerCandidatesCard" style="cursor: pointer;" title="Click to jump to synthetic candidate grid">
               <i class="fa-solid fa-users text-purple"></i>
               <div>
-                <span class="ribbon-val">5 Profiles</span>
+                <span class="ribbon-val" id="bannerCandidatesVal">6 Profiles</span>
                 <span class="ribbon-lbl">Synthetic Candidates</span>
               </div>
             </div>
-            <div class="ribbon-card glass-panel">
+            <div class="ribbon-card glass-panel clickable-ribbon" id="bannerPersonasCard" style="cursor: pointer;" title="Click to switch AI interviewer persona">
               <i class="fa-solid fa-brain text-emerald"></i>
               <div>
-                <span class="ribbon-val">3 Personas</span>
+                <span class="ribbon-val" id="bannerPersonasVal">3 Personas</span>
                 <span class="ribbon-lbl">Multi-Interviewer Panel</span>
               </div>
             </div>
-            <div class="ribbon-card glass-panel">
+            <div class="ribbon-card glass-panel clickable-ribbon" id="bannerScoringCard" style="cursor: pointer;" title="Click to inspect 10% + 90% scoring breakdown">
               <i class="fa-solid fa-calculator text-amber"></i>
               <div>
-                <span class="ribbon-val">10% + 90%</span>
+                <span class="ribbon-val" id="bannerScoringVal">10% + 90%</span>
                 <span class="ribbon-lbl">Scoring Formula</span>
               </div>
             </div>
@@ -565,6 +565,43 @@
         </div>
         <div class="iframe-container">
           <iframe src="https://docs.thebreeth.com/" title="Breeth Documentation" class="breeth-iframe"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scoring Formula Explanation Modal -->
+  <div id="scoringFormulaModal" class="modal-backdrop hidden">
+    <div class="modal-card glass-panel" style="max-width: 650px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <i class="fa-solid fa-calculator text-amber" style="font-size:22px;"></i>
+          <h3 style="margin:0;">Apex AI Hybrid Evaluation Formula</h3>
+        </div>
+        <button id="closeScoringModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px;">
+          <h4 style="color: var(--amber); margin-bottom: 8px;"><i class="fa-solid fa-scale-balanced"></i> Formula Architecture:</h4>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0; line-height: 1.6;">
+            <strong>Final Score = 10% (Quantitative Completion) + 90% (Qualitative Technical Accuracy & System Design)</strong>
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: 8px;">
+            <h5 style="color: #fbbf24; margin: 0 0 6px 0; font-size: 15px;"><i class="fa-solid fa-list-check"></i> 10% Quantitative</h5>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+              Calculated from candidate mission completions vs skipped cohort topics across all 31 days.
+            </p>
+          </div>
+
+          <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); padding: 14px; border-radius: 8px;">
+            <h5 style="color: #818cf8; margin: 0 0 6px 0; font-size: 15px;"><i class="fa-solid fa-code text-indigo"></i> 90% Technical Depth</h5>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+              Evaluated in real-time by the AI Interviewer across technical correctness, trade-offs, and tool mastery.
+            </p>
+          </div>
         </div>
       </div>
     </div>

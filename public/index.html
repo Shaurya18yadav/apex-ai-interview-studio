@@ -101,12 +101,17 @@
 
         <!-- Candidate Detail Sidebar Card -->
         <div id="candidateCard" class="candidate-card hidden">
-          <div class="candidate-header">
-            <div class="avatar" id="candidateAvatar">AC</div>
-            <div class="candidate-meta">
-              <h4 id="candidateName">Alex Chen</h4>
-              <span class="badge level-badge" id="candidateLevel">Mid-Level AI Engineer</span>
+          <div class="candidate-header" style="justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="avatar" id="candidateAvatar">AC</div>
+              <div class="candidate-meta">
+                <h4 id="candidateName">Alex Chen</h4>
+                <span class="badge level-badge" id="candidateLevel">Mid-Level AI Engineer</span>
+              </div>
             </div>
+            <button type="button" id="deleteCandidateBtn" class="btn btn-danger btn-xs" title="Delete candidate from database">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
           </div>
 
           <div class="candidate-stats">

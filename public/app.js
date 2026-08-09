@@ -508,6 +508,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  const deleteCandidateBtn = document.getElementById('deleteCandidateBtn');
+  if (deleteCandidateBtn) {
+    deleteCandidateBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (!selectedCandidate) return;
+
+      const confirmDelete = confirm(`Are you sure you want to delete candidate "${selectedCandidate.name}" from the database? This action cannot be undone.`);
+      if (!confirmDelete) return;
+
+      try {
+        const res = await fetch(`/api/candidates/${selectedCandidate.id}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          const deletedName = selectedCandidate.name;
+          selectedCandidate = null;
+          candidateCard.classList.add('hidden');
+          startInterviewBtn.disabled = true;
+          await fetchCandidates();
+          alert(`Candidate "${deletedName}" deleted successfully from database.`);
+        } else {
+          alert('Error deleting candidate: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Failed to delete candidate: ' + err.message);
+      }
+    });
+  }
+
   if (quickChipsBar) {
     quickChipsBar.addEventListener('click', (e) => {
       const chipBtn = e.target.closest('.chip-btn');

@@ -217,6 +217,33 @@ app.get('/api/interview/session/:session_id', (req, res) => {
   }
 });
 
+// 6. DELETE /api/candidates/:id (Delete Candidate from Database)
+app.delete('/api/candidates/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    let candidates = agent.getCandidates();
+    const existingCandidate = candidates.find(c => c.id === id);
+
+    if (!existingCandidate) {
+      return res.status(404).json({ error: `Candidate ${id} not found` });
+    }
+
+    candidates = candidates.filter(c => c.id !== id);
+    const candidatesPath = path.join(__dirname, 'candidates.json');
+    fs.writeFileSync(candidatesPath, JSON.stringify(candidates, null, 2));
+    agent.loadData();
+
+    res.json({
+      success: true,
+      message: `Candidate ${existingCandidate.name} (${id}) deleted successfully`,
+      deleted_id: id,
+      remaining_count: candidates.length
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete candidate', message: err.message });
+  }
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`====================================================`);
